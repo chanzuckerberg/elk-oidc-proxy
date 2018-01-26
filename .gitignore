@@ -1,0 +1,14 @@
+.chalice/deployments/
+.chalice/venv/
+__pycache__/
+.idea/
+.flake8/
+gcp-credentials.json
+env/
+venv/
+.terraform/
+terraform.*
+*.tfstate
+tags
+Dockerfile
+environment_*

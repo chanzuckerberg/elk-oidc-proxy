@@ -1,0 +1,15 @@
+set -a
+AWS_PROFILE=undefined
+ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
+APP_NAME=elk-oidc-proxy
+AWS_DEFAULT_REGION=undefined
+CLUSTER=undefined
+ES_ENDPOINT=undefined
+HEALTHCHECK_ACCOUNT_EMAIL=undefined
+OAUTH2_CLIENT_ID=undefined
+OAUTH2_CLIENT_SECRET=undefined
+DOMAIN_NAME=domain.org
+PROXY_FQDN=logs.domain.org
+TERRAFORM_BUCKET=org-domain-${ACCOUNT_ID}-terraform
+PORT=80
+set +a

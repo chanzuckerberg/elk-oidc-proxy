@@ -1,0 +1,50 @@
+{
+  "family": "${APP_NAME}",
+  "containerDefinitions": [
+      {
+          "name": "${APP_NAME}",
+          "image": "${IMAGE_NAME}",
+          "cpu": 0,
+          "memoryReservation": 512,
+          "portMappings": [
+              {
+                  "containerPort": 80,
+                  "hostPort": 80,
+                  "protocol": "tcp"
+              },
+              {
+                  "containerPort": 443,
+                  "hostPort": 443,
+                  "protocol": "tcp"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "PORT",
+                  "value": "${PORT}"
+              }
+          ],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "/aws/ecs/${APP_NAME}",
+                  "awslogs-region": "${AWS_DEFAULT_REGION}",
+                  "awslogs-stream-prefix": "ecs"
+              }
+          }
+      }
+  ],
+  "taskRoleArn": "arn:aws:iam::${ACCOUNT_ID}:role/${APP_NAME}",
+  "executionRoleArn": "arn:aws:iam::${ACCOUNT_ID}:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024"
+}
