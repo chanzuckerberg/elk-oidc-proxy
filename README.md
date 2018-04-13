@@ -3,7 +3,11 @@ ELK OIDC Proxy uses Google accounts authenticate users to use [AWS ElasticSearch
 
 ## Prerequisites
 
-Before doing anything, you must define an environment for deploying into your AWS account. There is an environment template in `environment_template`.
+Before doing anything, you will need to install following command line tools.
+* [Terraform](https://www.terraform.io/)
+* [AWS CLI](https://aws.amazon.com/cli/)
+
+Then, you must define an environment for deploying into your AWS account. There is an environment template in `environment_template`.
 
 ```bash
 cp config/environment_template environment
@@ -58,12 +62,6 @@ $ make publish
 ```
 
 ### Deployment
-Before your first deployment, you will need to create the ECS service with the command below.
-
-```bash
-make service
-```
-Once this is complete, you do not need to run it again. To deploy the app use the command below.
 
 ```bash
 make deploy
