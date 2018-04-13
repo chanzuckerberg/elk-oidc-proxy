@@ -58,6 +58,12 @@ $ make publish
 ```
 
 ### Deployment
+Before your first deployment, you will need to create the ECS service with the command below.
+
+```bash
+make service
+```
+Once this is complete, you do not need to run it again. To deploy the app use the command below.
 
 ```bash
 make deploy
