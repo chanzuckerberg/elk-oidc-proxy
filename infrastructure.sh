@@ -10,7 +10,8 @@ terraform "$ACTION" \
   -var "cluster=${CLUSTER}" \
   -var "app_name=${APP_NAME}" \
   -var "domain_name=${DOMAIN_NAME}" \
-  -var "proxy_fqdn=${PROXY_fqdn}" \
+  -var "proxy_fqdn=${PROXY_FQDN}" \
   -var "terraform_bucket=${TERRAFORM_BUCKET}" \
+  -var "port=${PORT}" \
   $([[ "$ACTION" == "plan" ]] && echo -n "-detailed-exitcode" || echo -n "") \
   "$@"

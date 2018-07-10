@@ -23,6 +23,7 @@ terraform {
 variable "domain_name" {}
 variable "proxy_fqdn" {}
 variable "cluster" {}
+variable "port" {}
 
 
 ////
@@ -63,11 +64,6 @@ resource "aws_ecr_repository_policy" "logs" {
 }
 EOF
 }
-
-output "ecr_uri" {
-  value = "${aws_ecr_repository.logs.repository_url}"
-}
-
 
 ////
 // cluster
@@ -291,12 +287,13 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_cloudwatch_log_group" "ecs" {
   name = "/aws/ecs/${var.app_name}"
+  retention_in_days = "90"
 }
 
 
 // task executor role
 resource "aws_iam_role" "task_executor" {
-  name = "ecsTaskExecutionRole"
+  name = "elkProxyEcsTaskExecutionRole"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -314,6 +311,32 @@ resource "aws_iam_role" "task_executor" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_policy" "logs_writer" {
+  name = "LogsWriter"
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/ecs/elk-oidc-proxy:*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "task_executor_logs" {
+  name = "${var.app_name}-logs"
+  roles = ["${aws_iam_role.task_executor.name}"]
+  policy_arn = "${aws_iam_policy.logs_writer.arn}"
 }
 
 resource "aws_iam_policy_attachment" "task_executor_ecs" {
@@ -374,6 +397,61 @@ resource "aws_iam_role_policy" "proxy" {
             "Effect": "Allow"
         }
     ]
+}
+EOF
+}
+
+output "task_definition" {
+  value = <<EOF
+{
+  "family": "${var.app_name}",
+  "containerDefinitions": [
+      {
+          "name": "${var.app_name}",
+          "image": "${aws_ecr_repository.logs.repository_url}",
+          "cpu": 0,
+          "memoryReservation": 512,
+          "portMappings": [
+              {
+                  "containerPort": 80,
+                  "hostPort": 80,
+                  "protocol": "tcp"
+              },
+              {
+                  "containerPort": 443,
+                  "hostPort": 443,
+                  "protocol": "tcp"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "PORT",
+                  "value": "${var.port}"
+              }
+          ],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "/aws/ecs/${var.app_name}",
+                  "awslogs-region": "${var.aws_region}",
+                  "awslogs-stream-prefix": "ecs"
+              }
+          }
+      }
+  ],
+  "taskRoleArn": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.app_name}",
+  "executionRoleArn": "${aws_iam_role.task_executor.arn}",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024"
 }
 EOF
 }

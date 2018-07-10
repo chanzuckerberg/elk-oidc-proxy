@@ -32,7 +32,7 @@ publish:
 
 .PHONY: service
 service:
-	aws ecs register-task-definition --cli-input-json '$(shell export IMAGE_NAME=$(IMAGE_NAME) && cat config/task.json | envsubst '$$APP_NAME $$ACCOUNT_ID $$PORT $$AWS_DEFAULT_REGION $$IMAGE_NAME')'
+	aws ecs register-task-definition --cli-input-json '$(shell terraform output task_definition)'
 	aws ecs create-service \
 		--service-name $(APP_NAME) \
 		--desired-count 0 \
