@@ -333,21 +333,18 @@ resource "aws_iam_policy" "logs_writer" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "task_executor_logs" {
-  name = "${var.app_name}-logs"
-  roles = ["${aws_iam_role.task_executor.name}"]
+resource "aws_iam_role_policy_attachment" "task_executor_logs" {
   policy_arn = "${aws_iam_policy.logs_writer.arn}"
+  role = "${aws_iam_role.task_executor.name}"
 }
 
-resource "aws_iam_policy_attachment" "task_executor_ecs" {
-  name = "${var.app_name}-ecs"
-  roles = ["${aws_iam_role.task_executor.name}"]
+resource "aws_iam_role_policy_attachment" "task_executor_ecs" {
+  role = "${aws_iam_role.task_executor.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_policy_attachment" "task_executor_ecr" {
-  name = "${var.app_name}-ecr"
-  roles = ["${aws_iam_role.task_executor.name}"]
+resource "aws_iam_role_policy_attachment" "task_executor_ecr" {
+  role = "${aws_iam_role.task_executor.name}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
