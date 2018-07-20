@@ -65,6 +65,10 @@ resource "aws_ecr_repository_policy" "logs" {
 EOF
 }
 
+output "ecr_uri" {
+  value = "${aws_ecr_repository.logs.repository_url}"
+}
+
 ////
 // cluster
 //
