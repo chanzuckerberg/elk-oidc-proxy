@@ -26,7 +26,6 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 app = Flask('elk-oidc-proxy')
-app.debug = True
 
 sts = boto3.client("sts")
 
