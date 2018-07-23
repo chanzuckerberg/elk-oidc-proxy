@@ -1,5 +1,5 @@
 # ELK OIDC Proxy for AWS ElasticSearch
-ELK OIDC Proxy uses Google accounts authenticate users to use [AWS ElasticSearch](https://aws.amazon.com/elasticsearch-service/) and, by extension, its Kibana plugin. It uses the [Open ID Connect](https://en.wikipedia.org/wiki/OpenID_Connect) (OIDC) protocol on [Google's Identity Platform](https://developers.google.com/identity/protocols/OpenIDConnect).
+ELK OIDC Proxy uses Google accounts to authenticate users to use [AWS ElasticSearch](https://aws.amazon.com/elasticsearch-service/) and, by extension, its Kibana plugin. It uses the [Open ID Connect](https://en.wikipedia.org/wiki/OpenID_Connect) (OIDC) protocol on [Google's Identity Platform](https://developers.google.com/identity/protocols/OpenIDConnect).
 
 ## Prerequisites
 
