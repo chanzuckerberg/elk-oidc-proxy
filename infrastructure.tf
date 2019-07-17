@@ -82,7 +82,7 @@ resource "aws_vpc" "logs" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.logs.id}"
 
-  tags {
+  tags = {
     Name = "${var.app_name}"
   }
 }
@@ -91,13 +91,6 @@ resource "aws_route" "internet_access" {
   route_table_id = "${aws_vpc.logs.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id = "${aws_internet_gateway.gw.id}"
-}
-
-resource "aws_eip" "tuto_eip" {
-  vpc      = true
-  depends_on = [
-    "aws_internet_gateway.gw"
-  ]
 }
 
 resource "aws_subnet" "proxy_subnet0" {
@@ -120,7 +113,7 @@ resource "aws_subnet" "proxy_subnet1" {
 
 resource "aws_route_table" "private_route_table" {
   vpc_id = "${aws_vpc.logs.id}"
-  tags {
+  tags = {
       Name = "Private route table"
   }
 }
@@ -155,7 +148,7 @@ resource "aws_ecs_cluster" "fargate" {
 }
 
 output "subnets" {
-  value = ["${data.aws_subnet_ids.default.ids}"]
+  value = "${data.aws_subnet_ids.default.ids}"
 }
 
 
@@ -236,7 +229,7 @@ resource "aws_security_group_rule" "outbound" {
 
 resource "aws_lb" "proxy" {
   name = "${var.app_name}"
-  subnets = ["${data.aws_subnet_ids.default.ids}"]
+  subnets = "${data.aws_subnet_ids.default.ids}"
   security_groups = ["${aws_security_group.proxy.id}"]
   depends_on = [
     "aws_internet_gateway.gw"

@@ -38,7 +38,7 @@ service:
 		--desired-count 0 \
 		--cluster $(CLUSTER) \
 		--task-definition $(APP_NAME) \
-		--network-configuration "awsvpcConfiguration={subnets=[$(SUBNETS)],securityGroups=[$(SEC_GROUP)],assignPublicIp=ENABLED}" \
+		--network-configuration "awsvpcConfiguration={subnets=$(SUBNETS),securityGroups=[$(SEC_GROUP)],assignPublicIp=ENABLED}" \
 		--load-balancers targetGroupArn=$(TARGET_GROUP_ARN),containerName=$(APP_NAME),containerPort=$(PORT) \
 		--launch-type FARGATE
 
