@@ -1,5 +1,5 @@
 boto3==1.5.21
-pyjwt==1.5.3
+pyjwt==2.4.0
 requests-aws4auth==0.9
 cryptography==2.1.4
 Flask==0.12.2
